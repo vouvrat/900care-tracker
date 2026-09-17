@@ -1,19 +1,21 @@
 :root {
-  --bg: #f6f5f0;
+  --bg: #fffbfd;
   --card-bg: #ffffff;
-  --ink: #2b2b26;
-  --muted: #7a7a70;
-  --accent: #4a7c59;
-  --accent-dark: #375e42;
-  --border: #e3e1d8;
-  --danger: #b3413a;
+  --ink: #1a1a1a;
+  --muted: #777777;
+  --accent: #f32aa4;
+  --accent-dark: #cc1f87;
+  --accent-tint: #fdf2f8;
+  --secondary: #2ea957;
+  --border: #f0dce9;
+  --danger: #cb0005;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--ink);
 }
@@ -23,25 +25,47 @@ body {
   align-items: center;
   gap: 1.25rem;
   padding: 0.75rem 1.5rem;
-  background: var(--accent-dark);
-  color: white;
+  background: var(--card-bg);
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
   flex-wrap: wrap;
 }
 
 .topnav a {
-  color: white;
+  color: var(--ink);
   text-decoration: none;
   font-size: 0.95rem;
-  opacity: 0.9;
+  font-weight: 500;
+  opacity: 0.75;
 }
 
-.topnav a:hover { opacity: 1; text-decoration: underline; }
+.topnav a:hover { opacity: 1; color: var(--accent); }
 
 .topnav .brand {
-  font-weight: 700;
-  font-size: 1.1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
   opacity: 1;
   margin-right: 0.5rem;
+}
+
+.brand-main {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+.brand-dot { color: var(--secondary); }
+
+.brand-sub {
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-left: 0.4rem;
+  border-left: 2px solid var(--border);
 }
 
 .container {
@@ -55,7 +79,7 @@ h1 { margin-top: 0; }
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 14px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
 }
@@ -65,7 +89,7 @@ h1 { margin-top: 0; }
   border-collapse: collapse;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 14px;
   overflow: hidden;
   margin-bottom: 1.5rem;
 }
@@ -78,7 +102,7 @@ h1 { margin-top: 0; }
 }
 
 .grid th {
-  background: #eef1ea;
+  background: var(--accent-tint);
   font-weight: 600;
 }
 
@@ -104,8 +128,16 @@ h1 { margin-top: 0; }
 .stack-form input, .stack-form select {
   padding: 0.5rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.stack-form input:focus, .stack-form select:focus,
+.inline-form input:focus, .inline-form select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
 }
 
 .inline-form {
@@ -118,23 +150,30 @@ h1 { margin-top: 0; }
 .inline-form input, .inline-form select {
   padding: 0.4rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
+  font-family: inherit;
 }
 
 button {
   background: var(--accent);
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
   cursor: pointer;
   font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s ease;
 }
 
 button:hover { background: var(--accent-dark); }
 
 button.danger { background: var(--danger); }
-button.danger:hover { background: #8c332d; }
+button.danger:hover { background: #a30004; }
+
+button.secondary { background: var(--secondary); }
+button.secondary:hover { background: #237d40; }
 
 .timeline {
   list-style: none;
@@ -148,7 +187,7 @@ button.danger:hover { background: #8c332d; }
   align-items: baseline;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 0.6rem 0.9rem;
   margin-bottom: 0.4rem;
   font-size: 0.9rem;
@@ -157,11 +196,12 @@ button.danger:hover { background: #8c332d; }
 .timeline-item .date { color: var(--muted); min-width: 6.5rem; }
 
 .timeline-item .badge {
-  background: #eef1ea;
-  border-radius: 4px;
-  padding: 0.1rem 0.5rem;
+  background: var(--accent-tint);
+  color: var(--accent-dark);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
   font-size: 0.75rem;
   font-weight: 600;
 }
 
-.timeline-item.avis .badge { background: #f4e9d8; }
+.timeline-item.avis .badge { background: #e9f7ee; color: #237d40; }
