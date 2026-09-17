@@ -7,7 +7,7 @@ from apscheduler.triggers.cron import CronTrigger
 from sqlmodel import Session
 
 from app.db import engine
-from app.services.catalog_sync import sync_catalog
+from app.services.catalog_sync import refresh_catalog_cache
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -16,11 +16,11 @@ _scheduler = BackgroundScheduler(timezone="Europe/Paris")
 
 def _run_sync_job() -> None:
     with Session(engine) as session:
-        log = sync_catalog(session)
+        log = refresh_catalog_cache(session)
         if log.error:
             logger.warning("Sync catalogue 900 Care en repli (%s) : %s", log.source, log.error)
         else:
-            logger.info("Sync catalogue 900 Care OK : %s produit(s) ajouté(s)", log.added_count)
+            logger.info("Sync catalogue 900 Care OK : %s nouveauté(s) détectée(s)", log.added_count)
 
 
 def start_scheduler() -> None:

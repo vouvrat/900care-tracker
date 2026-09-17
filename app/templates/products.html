@@ -3,33 +3,38 @@
 {% block content %}
 <h1>Catalogue produits</h1>
 
-{% if last_sync %}
-<p class="muted">
-  Dernière synchro catalogue 900 Care : {{ last_sync.ran_at.strftime('%d/%m/%Y %H:%M') }} UTC —
-  {% if last_sync.error %}
-    échec, repli sur le catalogue intégré ({{ last_sync.added_count }} ajouté(s))
-  {% else %}
-    {{ last_sync.added_count }} produit(s) ajouté(s) automatiquement
-  {% endif %}
-  <br>Automatique chaque dimanche à 4h.
-</p>
-{% endif %}
-
-{% if catalog_remaining %}
+{% if catalog_view %}
 <section class="card">
   <h2>Catalogue 900 Care</h2>
-  <p class="muted">Importe directement les produits officiels 900 Care (nom, catégorie et vignette) au lieu de les saisir à la main.</p>
+  <p class="muted">Active uniquement les produits que tu utilises réellement — le reste du catalogue officiel reste disponible ici au cas où.</p>
+  {% if last_sync %}
+  <p class="muted">
+    Dernière mise à jour du catalogue : {{ last_sync.ran_at.strftime('%d/%m/%Y %H:%M') }} UTC —
+    {% if last_sync.error %}
+      échec, repli sur la copie intégrée
+    {% else %}
+      {{ last_sync.added_count }} nouveauté(s) détectée(s)
+    {% endif %}
+    · automatique chaque dimanche à 4h
+    <form method="post" action="/products/refresh-catalog" style="display:inline">
+      <button type="submit" class="link-button">rafraîchir maintenant</button>
+    </form>
+  </p>
+  {% endif %}
   <div class="catalog-grid">
-    {% for c in catalog_remaining %}
+    {% for row in catalog_view %}
     <div class="catalog-item">
-      <img src="{{ c.image_url }}" alt="{{ c.name }}" loading="lazy">
-      <span>{{ c.name }}</span>
+      <img src="{{ row.item.image_url }}" alt="{{ row.item.name }}" loading="lazy">
+      <span>{{ row.item.name }}</span>
+      <form method="post" action="/products/catalog/{{ row.item.id }}/toggle">
+        <label class="switch">
+          <input type="checkbox" {% if row.active %}checked{% endif %} onchange="this.form.submit()">
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+        </label>
+      </form>
     </div>
     {% endfor %}
   </div>
-  <form method="post" action="/products/import-catalog">
-    <button type="submit">Importer les {{ catalog_remaining|length }} produits restants</button>
-  </form>
 </section>
 {% endif %}
 

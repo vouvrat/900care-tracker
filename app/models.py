@@ -51,3 +51,16 @@ class CatalogSyncLog(SQLModel, table=True):
     source: str  # "live" | "fallback"
     added_count: int = 0
     error: str = ""
+
+
+class CatalogItem(SQLModel, table=True):
+    """Catalogue connu de 900 Care (cache local, rafraîchi chaque semaine).
+
+    Ne représente pas un produit suivi : c'est la liste de référence dans
+    laquelle l'utilisateur active/désactive un produit au cas par cas.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(unique=True)
+    category: str = ""
+    image_url: str = ""
+    updated_at: datetime = Field(default_factory=datetime.utcnow)

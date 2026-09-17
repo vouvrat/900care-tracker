@@ -2,9 +2,11 @@
 
 Récupère la liste des produits publiée par le site (via les données
 structurées JSON-LD des pages publiques — aucune clé API, aucun scraping
-du JS client) et ajoute automatiquement les produits qui manquent encore
-au catalogue local. Les images restent hébergées sur le CDN 900.care et
-sont affichées par lien direct, jamais copiées.
+du JS client) et met à jour le cache local CatalogItem : nom, catégorie,
+image. Ne touche jamais à la table Product — c'est l'utilisateur qui
+choisit, produit par produit, ce qu'il suit réellement (voir toggle_product
+dans app/routers/products.py). Les images restent hébergées sur le CDN
+900.care et sont affichées par lien direct, jamais copiées.
 """
 
 import json
@@ -16,7 +18,7 @@ from datetime import datetime
 from sqlmodel import Session, select
 
 from app.catalog_900care import CATALOG_900CARE
-from app.models import CatalogSyncLog, Product
+from app.models import CatalogItem, CatalogSyncLog
 
 CATALOG_URL = "https://900.care/collections/all"
 USER_AGENT = "Mozilla/5.0 (900Care-Tracker self-hosted catalog sync)"
@@ -44,7 +46,7 @@ def fetch_live_catalog() -> list[dict]:
 
     Lève une exception si le site est injoignable ou si sa structure a
     changé au point de ne plus exposer les données attendues — à l'appelant
-    de décider du repli (voir sync_catalog).
+    de décider du repli (voir refresh_catalog_cache).
     """
     html = _fetch(CATALOG_URL)
 
@@ -84,9 +86,24 @@ def fetch_live_catalog() -> list[dict]:
     return catalog
 
 
-def sync_catalog(session: Session) -> CatalogSyncLog:
+def seed_catalog_cache_if_empty(session: Session) -> None:
+    """Amorce le cache avec la copie statique au tout premier démarrage,
+    pour que les toggles soient utilisables avant la première synchro."""
+    if session.exec(select(CatalogItem)).first():
+        return
+    for item in CATALOG_900CARE:
+        session.add(CatalogItem(
+            name=item["name"],
+            category=item["category"],
+            image_url=item["image_url"],
+        ))
+    session.commit()
+
+
+def refresh_catalog_cache(session: Session) -> CatalogSyncLog:
     """Récupère le catalogue (live, avec repli sur la copie statique) et
-    ajoute les produits manquants. Journalise le résultat et le retourne."""
+    met à jour le cache CatalogItem (ajoute les nouveautés, rafraîchit
+    catégorie/image des entrées existantes). Journalise le résultat."""
     try:
         catalog = fetch_live_catalog()
         source = "live"
@@ -96,26 +113,28 @@ def sync_catalog(session: Session) -> CatalogSyncLog:
         source = "fallback"
         error = str(exc)[:500]
 
-    existing_names = {
-        p.name.strip().lower()
-        for p in session.exec(select(Product).where(Product.active == True))  # noqa: E712
-    }
+    existing = {c.name.strip().lower(): c for c in session.exec(select(CatalogItem))}
 
     added = 0
+    now = datetime.utcnow()
     for item in catalog:
         key = item["name"].strip().lower()
-        if key in existing_names:
-            continue
-        session.add(Product(
-            name=item["name"],
-            category=item.get("category", ""),
-            unit="unité",
-            image_url=item.get("image_url", ""),
-        ))
-        existing_names.add(key)
-        added += 1
+        current = existing.get(key)
+        if current:
+            current.category = item.get("category", "") or current.category
+            current.image_url = item.get("image_url", "") or current.image_url
+            current.updated_at = now
+            session.add(current)
+        else:
+            session.add(CatalogItem(
+                name=item["name"],
+                category=item.get("category", ""),
+                image_url=item.get("image_url", ""),
+                updated_at=now,
+            ))
+            added += 1
 
-    log = CatalogSyncLog(ran_at=datetime.utcnow(), source=source, added_count=added, error=error)
+    log = CatalogSyncLog(ran_at=now, source=source, added_count=added, error=error)
     session.add(log)
     session.commit()
     session.refresh(log)
