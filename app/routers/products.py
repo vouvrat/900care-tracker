@@ -85,6 +85,24 @@ def create_product(
     return RedirectResponse("/products", status_code=303)
 
 
+@router.post("/products/{product_id}/update")
+def update_product(
+    product_id: int,
+    category: str = Form(""),
+    unit: str = Form("unité"),
+    notes: str = Form(""),
+    session: Session = Depends(get_session),
+):
+    product = session.get(Product, product_id)
+    if product:
+        product.category = category.strip()
+        product.unit = unit.strip() or "unité"
+        product.notes = notes.strip()
+        session.add(product)
+        session.commit()
+    return RedirectResponse("/products", status_code=303)
+
+
 @router.post("/products/{product_id}/delete")
 def delete_product(product_id: int, session: Session = Depends(get_session)):
     product = session.get(Product, product_id)

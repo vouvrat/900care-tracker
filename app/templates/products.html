@@ -55,15 +55,20 @@
 {% else %}
 <div class="grid-wrap">
 <table class="grid">
-  <thead><tr><th></th><th>Nom</th><th>Catégorie</th><th>Unité</th><th>Notes</th><th></th></tr></thead>
+  <thead><tr><th></th><th>Nom</th><th>Détails</th><th></th></tr></thead>
   <tbody>
     {% for p in products %}
     <tr>
       <td>{% if p.image_url %}<img class="thumb" src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">{% endif %}</td>
       <td>{{ p.name }}</td>
-      <td>{{ p.category }}</td>
-      <td>{{ p.unit }}</td>
-      <td>{{ p.notes }}</td>
+      <td>
+        <form method="post" action="/products/{{ p.id }}/update" class="inline-form product-edit">
+          <input type="text" name="category" value="{{ p.category }}" placeholder="Catégorie" size="12">
+          <input type="text" name="unit" value="{{ p.unit }}" placeholder="Unité" required size="10">
+          <input type="text" name="notes" value="{{ p.notes }}" placeholder="Notes" size="16">
+          <button type="submit">Enregistrer</button>
+        </form>
+      </td>
       <td>
         <form method="post" action="/products/{{ p.id }}/delete" onsubmit="return confirm('Supprimer ce produit ?');">
           <button type="submit" class="danger">Supprimer</button>
