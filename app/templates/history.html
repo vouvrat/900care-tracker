@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Historique — 900 Care{% endblock %}
+{% block content %}
+<h1>Historique</h1>
+
+<form method="get" action="/history" class="inline-form">
+  <label>Membre
+    <select name="member_id" onchange="this.form.submit()">
+      <option value="">Tous</option>
+      {% for m in members %}
+      <option value="{{ m.id }}" {% if selected_member_id == m.id %}selected{% endif %}>{{ m.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Produit
+    <select name="product_id" onchange="this.form.submit()">
+      <option value="">Tous</option>
+      {% for p in products %}
+      <option value="{{ p.id }}" {% if selected_product_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+</form>
+
+{% if not timeline %}
+<p class="empty">Aucun événement.</p>
+{% else %}
+<ul class="timeline">
+  {% for item in timeline %}
+  <li class="timeline-item {{ item.kind }}">
+    <span class="date">{{ item.date }}</span>
+    <span class="badge">{{ 'Conso' if item.kind == 'conso' else 'Avis' }}</span>
+    <span class="label">{{ item.label }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

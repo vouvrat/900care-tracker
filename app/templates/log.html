@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Journal — 900 Care{% endblock %}
+{% block content %}
+<h1>Journal de consommation</h1>
+
+{% if not members %}
+<p class="empty">Ajoute d'abord des <a href="/members">membres</a>.</p>
+{% elif not products %}
+<p class="empty">Ajoute d'abord des <a href="/products">produits</a>.</p>
+{% else %}
+<section class="card">
+  <h2>Enregistrer une utilisation</h2>
+  <form method="post" action="/log" class="stack-form">
+    <label>Membre
+      <select name="member_id" required>
+        {% for m in members %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Produit
+      <select name="product_id" required>
+        {% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Événement
+      <select name="event_type" required>
+        <option value="started">A commencé</option>
+        <option value="finished" selected>A terminé</option>
+      </select>
+    </label>
+    <label>Quantité <input type="number" step="0.1" name="quantity" value="1"></label>
+    <label>Date <input type="date" name="event_date" id="event-date" required></label>
+    <button type="submit">Enregistrer</button>
+  </form>
+</section>
+<script>
+  document.getElementById('event-date').valueAsDate = new Date();
+</script>
+
+<h2>Derniers événements</h2>
+{% if not recent_events %}
+<p class="empty">Aucun événement enregistré.</p>
+{% else %}
+<table class="grid">
+  <thead><tr><th>Date</th><th>Membre</th><th>Produit</th><th>Événement</th><th>Qté</th></tr></thead>
+  <tbody>
+    {% for e in recent_events %}
+    <tr>
+      <td>{{ e.event_date }}</td>
+      <td>{{ members_by_id.get(e.member_id).name if members_by_id.get(e.member_id) else '?' }}</td>
+      <td>{{ products_by_id.get(e.product_id).name if products_by_id.get(e.product_id) else '?' }}</td>
+      <td>{{ 'A terminé' if e.event_type == 'finished' else 'A commencé' }}</td>
+      <td>{{ e.quantity }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endif %}
+{% endblock %}

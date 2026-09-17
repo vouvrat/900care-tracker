@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Avis — 900 Care{% endblock %}
+{% block content %}
+<h1>Avis famille</h1>
+
+{% if not products %}
+<p class="empty">Ajoute d'abord des <a href="/products">produits</a>.</p>
+{% else %}
+<section class="card">
+  <h2>Ajouter un avis</h2>
+  <form method="post" action="/reviews" class="stack-form">
+    <label>Produit
+      <select name="product_id" required>
+        {% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Membre (optionnel — laisser vide pour un avis "foyer")
+      <select name="member_id">
+        <option value="">— Foyer —</option>
+        {% for m in members %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Note
+      <select name="rating" required>
+        <option value="5">5 — Excellent</option>
+        <option value="4">4 — Bien</option>
+        <option value="3" selected>3 — Correct</option>
+        <option value="2">2 — Moyen</option>
+        <option value="1">1 — Mauvais</option>
+      </select>
+    </label>
+    <label>Commentaire <input type="text" name="comment" placeholder="optionnel"></label>
+    <label>Date <input type="date" name="review_date" id="review-date" required></label>
+    <button type="submit">Enregistrer</button>
+  </form>
+</section>
+<script>
+  document.getElementById('review-date').valueAsDate = new Date();
+</script>
+
+<h2>Historique des avis</h2>
+{% if not reviews %}
+<p class="empty">Aucun avis pour l'instant.</p>
+{% else %}
+<table class="grid">
+  <thead><tr><th>Date</th><th>Produit</th><th>Membre</th><th>Note</th><th>Commentaire</th></tr></thead>
+  <tbody>
+    {% for r in reviews %}
+    <tr>
+      <td>{{ r.review_date }}</td>
+      <td>{{ products_by_id.get(r.product_id).name if products_by_id.get(r.product_id) else '?' }}</td>
+      <td>{{ members_by_id.get(r.member_id).name if r.member_id and members_by_id.get(r.member_id) else 'Foyer' }}</td>
+      <td>{{ r.rating }}/5</td>
+      <td>{{ r.comment }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endif %}
+{% endblock %}

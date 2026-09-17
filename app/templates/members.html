@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Membres — 900 Care{% endblock %}
+{% block content %}
+<h1>Membres du foyer</h1>
+
+<section class="card">
+  <h2>Taille du foyer</h2>
+  <form method="post" action="/members/household-size" class="inline-form">
+    <input type="number" name="household_size" min="1" max="20" value="{{ settings.household_size }}" required>
+    <button type="submit">Mettre à jour</button>
+  </form>
+  <p class="muted">Ajuste le nombre de personnes — ajoute ou désactive des membres automatiquement.</p>
+</section>
+
+<section class="card">
+  <h2>Couverture de commande</h2>
+  <form method="post" action="/members/coverage" class="inline-form">
+    <input type="number" step="0.5" min="0.5" name="order_coverage_months" value="{{ settings.order_coverage_months }}" required>
+    <span>mois</span>
+    <button type="submit">Mettre à jour</button>
+  </form>
+</section>
+
+<h2>Prénoms</h2>
+<table class="grid">
+  <thead><tr><th>Membre</th><th>Renommer</th></tr></thead>
+  <tbody>
+    {% for m in members %}
+    <tr>
+      <td>{{ m.name }}</td>
+      <td>
+        <form method="post" action="/members/{{ m.id }}/rename" class="inline-form">
+          <input type="text" name="name" value="{{ m.name }}" required>
+          <button type="submit">Renommer</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

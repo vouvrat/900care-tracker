@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — 900 Care{% endblock %}
+{% block content %}
+<h1>Tableau de bord</h1>
+
+{% if not stats %}
+<p class="empty">Aucun produit pour l'instant. <a href="/products">Ajoute ton premier produit</a>.</p>
+{% else %}
+<table class="grid">
+  <thead>
+    <tr>
+      <th>Produit</th>
+      {% for m in members %}<th>{{ m.name }}</th>{% endfor %}
+      <th>Rythme foyer (unités/mois)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in stats %}
+    <tr>
+      <td class="product-cell">{{ s.product.name }}<br><small>{{ s.product.unit }}</small></td>
+      {% for m in members %}
+      {% set cell = s.per_member.get(m.id) %}
+      <td>
+        {% if cell %}
+          {{ cell.finished_count }} terminé(s)
+          {% if cell.monthly_rate %}<br><small>{{ cell.monthly_rate }}/mois</small>{% endif %}
+          {% if cell.last_event_date %}<br><small class="muted">dernier: {{ cell.last_event_date }}</small>{% endif %}
+        {% else %}
+          —
+        {% endif %}
+      </td>
+      {% endfor %}
+      <td><strong>{{ s.household_monthly_rate }}</strong></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Suggestion pour la prochaine commande</h2>
+<p class="muted">Couverture actuelle : {{ settings.order_coverage_months }} mois — <a href="/members">ajuster</a></p>
+{% if not suggestions %}
+<p class="empty">Pas encore assez de données de consommation pour calculer une suggestion. Enregistre des utilisations dans le <a href="/log">Journal</a>.</p>
+{% else %}
+<table class="grid">
+  <thead>
+    <tr><th>Produit</th><th>Rythme foyer</th><th>Quantité suggérée</th></tr>
+  </thead>
+  <tbody>
+    {% for sug in suggestions %}
+    <tr>
+      <td>{{ sug.product_name }}</td>
+      <td>{{ sug.household_monthly_rate }} {{ sug.unit }}/mois</td>
+      <td><strong>{{ sug.suggested_quantity }} {{ sug.unit }}(s)</strong></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+# Compose pour déploiement sur Synology (Container Manager ou SSH).
+# Ne construit rien : tire l'image déjà publiée sur Docker Hub.
+# Pré-requis : le dossier /volume1/docker/900care/data doit exister sur le NAS
+# (créer via File Station ou : mkdir -p /volume1/docker/900care/data).
+services:
+  900care:
+    image: vouvrat/900care-tracker:latest
+    container_name: 900care-tracker
+    ports:
+      - "8000:8000"
+    volumes:
+      - /volume1/docker/900care/data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

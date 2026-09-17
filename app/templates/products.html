@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Produits — 900 Care{% endblock %}
+{% block content %}
+<h1>Catalogue produits</h1>
+
+<section class="card">
+  <h2>Ajouter un produit</h2>
+  <form method="post" action="/products" class="stack-form">
+    <label>Nom <input type="text" name="name" required placeholder="ex: Brosse à dents bambou"></label>
+    <label>Catégorie <input type="text" name="category" placeholder="ex: bucco-dentaire"></label>
+    <label>Unité <input type="text" name="unit" placeholder="ex: brosse, tube, savon" value="unité"></label>
+    <label>Notes <input type="text" name="notes" placeholder="optionnel"></label>
+    <button type="submit">Ajouter</button>
+  </form>
+</section>
+
+<h2>Produits actifs</h2>
+{% if not products %}
+<p class="empty">Aucun produit. Ajoute ton premier produit ci-dessus.</p>
+{% else %}
+<table class="grid">
+  <thead><tr><th>Nom</th><th>Catégorie</th><th>Unité</th><th>Notes</th><th></th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category }}</td>
+      <td>{{ p.unit }}</td>
+      <td>{{ p.notes }}</td>
+      <td>
+        <form method="post" action="/products/{{ p.id }}/delete" onsubmit="return confirm('Supprimer ce produit ?');">
+          <button type="submit" class="danger">Supprimer</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
