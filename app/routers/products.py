@@ -4,7 +4,8 @@ from sqlmodel import Session, select
 
 from app.catalog_900care import CATALOG_900CARE
 from app.db import get_session
-from app.models import Product
+from app.models import CatalogSyncLog, Product
+from app.services.catalog_sync import sync_catalog
 from app.templating import templates
 
 router = APIRouter()
@@ -17,27 +18,19 @@ def products_page(request: Request, session: Session = Depends(get_session)):
     ).all()
     existing_names = {p.name.strip().lower() for p in products}
     catalog_remaining = [c for c in CATALOG_900CARE if c["name"].strip().lower() not in existing_names]
+    last_sync = session.exec(
+        select(CatalogSyncLog).order_by(CatalogSyncLog.ran_at.desc())
+    ).first()
     return templates.TemplateResponse(
-        request, "products.html", {"products": products, "catalog_remaining": catalog_remaining}
+        request,
+        "products.html",
+        {"products": products, "catalog_remaining": catalog_remaining, "last_sync": last_sync},
     )
 
 
 @router.post("/products/import-catalog")
 def import_catalog(session: Session = Depends(get_session)):
-    existing_names = {
-        p.name.strip().lower()
-        for p in session.exec(select(Product).where(Product.active == True))  # noqa: E712
-    }
-    for item in CATALOG_900CARE:
-        if item["name"].strip().lower() in existing_names:
-            continue
-        session.add(Product(
-            name=item["name"],
-            category=item["category"],
-            unit="unité",
-            image_url=item["image_url"],
-        ))
-    session.commit()
+    sync_catalog(session)
     return RedirectResponse("/products", status_code=303)
 
 

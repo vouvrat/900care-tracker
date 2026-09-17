@@ -3,6 +3,18 @@
 {% block content %}
 <h1>Catalogue produits</h1>
 
+{% if last_sync %}
+<p class="muted">
+  Dernière synchro catalogue 900 Care : {{ last_sync.ran_at.strftime('%d/%m/%Y %H:%M') }} UTC —
+  {% if last_sync.error %}
+    échec, repli sur le catalogue intégré ({{ last_sync.added_count }} ajouté(s))
+  {% else %}
+    {{ last_sync.added_count }} produit(s) ajouté(s) automatiquement
+  {% endif %}
+  <br>Automatique chaque dimanche à 4h.
+</p>
+{% endif %}
+
 {% if catalog_remaining %}
 <section class="card">
   <h2>Catalogue 900 Care</h2>

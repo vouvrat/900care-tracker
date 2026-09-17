@@ -43,3 +43,11 @@ class Review(SQLModel, table=True):
     rating: int
     comment: str = ""
     review_date: date = Field(default_factory=date.today)
+
+
+class CatalogSyncLog(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    ran_at: datetime = Field(default_factory=datetime.utcnow)
+    source: str  # "live" | "fallback"
+    added_count: int = 0
+    error: str = ""
