@@ -3,8 +3,26 @@
 {% block content %}
 <h1>Catalogue produits</h1>
 
+{% if catalog_remaining %}
 <section class="card">
-  <h2>Ajouter un produit</h2>
+  <h2>Catalogue 900 Care</h2>
+  <p class="muted">Importe directement les produits officiels 900 Care (nom, catégorie et vignette) au lieu de les saisir à la main.</p>
+  <div class="catalog-grid">
+    {% for c in catalog_remaining %}
+    <div class="catalog-item">
+      <img src="{{ c.image_url }}" alt="{{ c.name }}" loading="lazy">
+      <span>{{ c.name }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <form method="post" action="/products/import-catalog">
+    <button type="submit">Importer les {{ catalog_remaining|length }} produits restants</button>
+  </form>
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>Ajouter un produit manuellement</h2>
   <form method="post" action="/products" class="stack-form">
     <label>Nom <input type="text" name="name" required placeholder="ex: Brosse à dents bambou"></label>
     <label>Catégorie <input type="text" name="category" placeholder="ex: bucco-dentaire"></label>
@@ -20,10 +38,11 @@
 {% else %}
 <div class="grid-wrap">
 <table class="grid">
-  <thead><tr><th>Nom</th><th>Catégorie</th><th>Unité</th><th>Notes</th><th></th></tr></thead>
+  <thead><tr><th></th><th>Nom</th><th>Catégorie</th><th>Unité</th><th>Notes</th><th></th></tr></thead>
   <tbody>
     {% for p in products %}
     <tr>
+      <td>{% if p.image_url %}<img class="thumb" src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">{% endif %}</td>
       <td>{{ p.name }}</td>
       <td>{{ p.category }}</td>
       <td>{{ p.unit }}</td>

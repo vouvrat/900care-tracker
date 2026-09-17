@@ -24,6 +24,7 @@ class Product(SQLModel, table=True):
     unit: str = "unité"
     notes: str = ""
     active: bool = True
+    image_url: str = ""
 
 
 class ConsumptionEvent(SQLModel, table=True):

@@ -198,6 +198,44 @@ button.danger:hover { background: #a30004; }
 button.secondary { background: var(--secondary); }
 button.secondary:hover { background: #237d40; }
 
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.catalog-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.catalog-item img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--accent-tint);
+}
+
+.catalog-item span {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.thumb {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
 .star-rating {
   display: flex;
   flex-direction: row-reverse;
