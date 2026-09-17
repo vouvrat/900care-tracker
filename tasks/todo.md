@@ -44,6 +44,8 @@ Plan complet : /home/Vincent/.claude/plans/refactored-floating-orbit.md
 - [x] README : section build/push Docker Hub (avec avertissement architecture
       ARM host → amd64 cible, DS1515+ = x86_64) + section déploiement via
       Container Manager
-- [ ] À faire par l'utilisateur : `docker login`, build/push depuis sa machine,
-      créer `/volume1/docker/900care/data` sur le NAS, créer le projet dans
-      Container Manager avec `docker-compose.synology.yml`
+- [x] `docker login` (via token Docker Hub, --password-stdin)
+- [x] `docker compose build` + `docker compose push` — image `vouvrat/900care-tracker:latest`
+      publiée sur Docker Hub (2026-09-17)
+- [ ] À faire par l'utilisateur sur le NAS : créer `/volume1/docker/900care/data`,
+      créer le projet dans Container Manager avec `docker-compose.synology.yml`
