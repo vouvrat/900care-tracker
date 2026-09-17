@@ -21,13 +21,13 @@
       </select>
     </label>
     <label>Note
-      <select name="rating" required>
-        <option value="5">5 — Excellent</option>
-        <option value="4">4 — Bien</option>
-        <option value="3" selected>3 — Correct</option>
-        <option value="2">2 — Moyen</option>
-        <option value="1">1 — Mauvais</option>
-      </select>
+      <div class="star-rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 — Excellent">★</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 — Bien">★</label>
+        <input type="radio" id="star3" name="rating" value="3" checked><label for="star3" title="3 — Correct">★</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 — Moyen">★</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 — Mauvais">★</label>
+      </div>
     </label>
     <label>Commentaire <input type="text" name="comment" placeholder="optionnel"></label>
     <label>Date <input type="date" name="review_date" id="review-date" required></label>
@@ -51,7 +51,7 @@
       <td>{{ r.review_date }}</td>
       <td>{{ products_by_id.get(r.product_id).name if products_by_id.get(r.product_id) else '?' }}</td>
       <td>{{ members_by_id.get(r.member_id).name if r.member_id and members_by_id.get(r.member_id) else 'Foyer' }}</td>
-      <td>{{ r.rating }}/5</td>
+      <td><span class="stars-display" aria-label="{{ r.rating }}/5">{% for i in range(1, 6) %}{% if i <= r.rating %}★{% else %}☆{% endif %}{% endfor %}</span></td>
       <td>{{ r.comment }}</td>
     </tr>
     {% endfor %}

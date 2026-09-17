@@ -14,12 +14,16 @@
     <a href="/" class="brand">
       <span class="brand-main">900<span class="brand-dot">.</span>care</span><span class="brand-sub">tracker</span>
     </a>
-    <a href="/">Dashboard</a>
-    <a href="/log">Journal</a>
-    <a href="/products">Produits</a>
-    <a href="/members">Membres</a>
-    <a href="/reviews">Avis</a>
-    <a href="/history">Historique</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu">☰</label>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/log">Journal</a>
+      <a href="/products">Produits</a>
+      <a href="/members">Membres</a>
+      <a href="/reviews">Avis</a>
+      <a href="/history">Historique</a>
+    </div>
   </nav>
   <main class="container">
     {% block content %}{% endblock %}
