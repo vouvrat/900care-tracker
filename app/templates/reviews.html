@@ -42,6 +42,7 @@
 {% if not reviews %}
 <p class="empty">Aucun avis pour l'instant.</p>
 {% else %}
+<div class="grid-wrap">
 <table class="grid">
   <thead><tr><th>Date</th><th>Produit</th><th>Membre</th><th>Note</th><th>Commentaire</th></tr></thead>
   <tbody>
@@ -56,6 +57,7 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif %}
 {% endif %}
 {% endblock %}

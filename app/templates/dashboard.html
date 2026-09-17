@@ -6,6 +6,7 @@
 {% if not stats %}
 <p class="empty">Aucun produit pour l'instant. <a href="/products">Ajoute ton premier produit</a>.</p>
 {% else %}
+<div class="grid-wrap">
 <table class="grid">
   <thead>
     <tr>
@@ -35,6 +36,7 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif %}
 
 <h2>Suggestion pour la prochaine commande</h2>
@@ -42,6 +44,7 @@
 {% if not suggestions %}
 <p class="empty">Pas encore assez de données de consommation pour calculer une suggestion. Enregistre des utilisations dans le <a href="/log">Journal</a>.</p>
 {% else %}
+<div class="grid-wrap">
 <table class="grid">
   <thead>
     <tr><th>Produit</th><th>Rythme foyer</th><th>Quantité suggérée</th></tr>
@@ -56,5 +59,6 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif %}
 {% endblock %}

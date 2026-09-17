@@ -40,6 +40,7 @@
 {% if not recent_events %}
 <p class="empty">Aucun événement enregistré.</p>
 {% else %}
+<div class="grid-wrap">
 <table class="grid">
   <thead><tr><th>Date</th><th>Membre</th><th>Produit</th><th>Événement</th><th>Qté</th></tr></thead>
   <tbody>
@@ -54,6 +55,7 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif %}
 {% endif %}
 {% endblock %}

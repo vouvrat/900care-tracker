@@ -18,6 +18,7 @@
 {% if not products %}
 <p class="empty">Aucun produit. Ajoute ton premier produit ci-dessus.</p>
 {% else %}
+<div class="grid-wrap">
 <table class="grid">
   <thead><tr><th>Nom</th><th>Catégorie</th><th>Unité</th><th>Notes</th><th></th></tr></thead>
   <tbody>
@@ -36,5 +37,6 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif %}
 {% endblock %}
