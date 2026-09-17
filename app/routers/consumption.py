@@ -58,3 +58,12 @@ def create_event(
     session.add(event)
     session.commit()
     return RedirectResponse("/log", status_code=303)
+
+
+@router.post("/log/{event_id}/delete")
+def delete_event(event_id: int, session: Session = Depends(get_session)):
+    event = session.get(ConsumptionEvent, event_id)
+    if event:
+        session.delete(event)
+        session.commit()
+    return RedirectResponse("/log", status_code=303)

@@ -42,7 +42,7 @@
 {% else %}
 <div class="grid-wrap">
 <table class="grid">
-  <thead><tr><th>Date</th><th>Membre</th><th>Produit</th><th>Événement</th><th>Qté</th></tr></thead>
+  <thead><tr><th>Date</th><th>Membre</th><th>Produit</th><th>Événement</th><th>Qté</th><th></th></tr></thead>
   <tbody>
     {% for e in recent_events %}
     <tr>
@@ -51,6 +51,11 @@
       <td>{{ products_by_id.get(e.product_id).name if products_by_id.get(e.product_id) else '?' }}</td>
       <td>{{ 'A terminé' if e.event_type == 'finished' else 'A commencé' }}</td>
       <td>{{ e.quantity }}</td>
+      <td>
+        <form method="post" action="/log/{{ e.id }}/delete" onsubmit="return confirm('Supprimer cet événement ?');">
+          <button type="submit" class="danger">Supprimer</button>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
